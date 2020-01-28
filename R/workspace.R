@@ -51,6 +51,19 @@
 #' of method.
 #' @param sku A string indicating if the workspace will be "basic" or
 #' "enterprise" edition.
+#' @param cmk_keyvault The key vault containing the customer managed key in the
+#' Azure resource ID format:
+#' '/subscriptions//resourcegroups//providers/microsoft.keyvault/vaults/' For
+#' example: /subscriptions/d139f240-94e6-4175-87a7-954b9d27db16/resourcegroups/myresourcegroup/providers/microsoft.keyvault/vaults/mykeyvault'
+#' See example code below for more details on the Azure resource ID format.
+#' @param resource_cmk_uri The key URI of the customer managed key to encrypt
+#' the data at rest. The URI format is: 'https:///keys//'. For example,
+#' 'https://mykeyvault.vault.azure.net/keys/mykey/bc5dce6d01df49w2na7ffb11a2ee008b'.
+#' Refer to https://docs.microsoft.com/azure-stack/user/azure-stack-key-vault-manage-portal
+#' for steps on how to create a key and get its URI.
+#' @param hbi_workspace Specifies whether the customer data is of High Business
+#' Impact(HBI), i.e., contains sensitive business information. The default value
+#' is False. When set to True, downstream services will selectively disable logging.
 #' @return The `Workspace` object.
 #' @export
 #' @examples
@@ -98,7 +111,10 @@ create_workspace <- function(
   container_registry = NULL,
   exist_ok = FALSE,
   show_output = TRUE,
-  sku = "basic") {
+  sku = "basic",
+  cmk_keyvault = NULL,
+  resource_cmk_uri = NULL,
+  hbi_workspace = NULL) {
   ws <-
     azureml$core$Workspace$create(name = name,
                                   subscription_id = subscription_id,
@@ -112,7 +128,10 @@ create_workspace <- function(
                                   container_registry = container_registry,
                                   exist_ok = exist_ok,
                                   show_output = show_output,
-                                  sku = sku)
+                                  sku = sku,
+                                  cmk_keyvault = cmk_keyvault,
+                                  resource_cmk_uri = resource_cmk_uri,
+                                  hbi_workspace = hbi_workspace)
   invisible(ws)
 }
 
